@@ -1,0 +1,16 @@
+# Secrets: real DB credentials live here, never commit
+.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Raw data is downloaded, not versioned
+data/raw/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
