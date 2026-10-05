@@ -206,18 +206,24 @@ the filter context, is the most important concept in DAX.
 
 ```DAX
 Position =
-RANKX (
-    ALLSELECTED ( dim_team ),
-    [Total Points] + [Goal Difference] / 1000,
-    ,
-    DESC,
-    DENSE
+IF (
+    ISBLANK ( [Matches Played] ),
+    BLANK (),
+    RANKX (
+        ALLSELECTED ( dim_team ),
+        [Total Points] + [Goal Difference] / 1000,
+        ,
+        DESC,
+        DENSE
+    )
 )
 ```
 
 Ranks teams by points, with goal difference as the tie-breaker (dividing by 1000 keeps it
 smaller than one point). `ALLSELECTED` ranks against all teams in the current selection, not
-just the row's own team.
+just the row's own team. The `IF ( ISBLANK ( ... ) )` returns blank for teams that didn't play
+in the selected season. Without it, RANKX still gives those teams a rank (21st), and since one
+measure isn't blank, the table shows all 34 teams instead of 20.
 
 ### Cumulative points (for the season race chart)
 
@@ -264,7 +270,8 @@ Format → Slicer settings → **Single select** on. Dropdown style saves space.
 `Position`, `dim_team[team_name]`, `Matches Played`, `Wins`, `Draws`, `Losses`,
 `Goals For`, `Goals Against`, `Goal Difference`, `Total Points`, `Form (Last 5)`.
 Sort by `Position` ascending (click the column header). Teams not in the selected season
-disappear automatically, because all their measures are blank.
+disappear automatically, because all their measures are blank (this is why `Position` needs
+its ISBLANK check).
 
 **3. Team trends over seasons** (top right). Line chart:
 X-axis `dim_season[season_label]`, Y-axis `Points per Game`, Legend `dim_team[team_name]`.
