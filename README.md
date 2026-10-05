@@ -97,7 +97,7 @@ erDiagram
         tinyint points
     }
     dim_team {
-        smallint team_key PK, FK
+        smallint team_key PK
         varchar team_name
     }
     dim_season {
